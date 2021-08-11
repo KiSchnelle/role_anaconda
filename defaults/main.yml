@@ -1,0 +1,8 @@
+---
+# defaults file for role_anaconda
+version: 2021.05
+create_modulefile: true
+download_fodler: /var/log/ansible/roles/role_anaconda/install
+install_path: /data/software/modules/anaconda3
+modulefile_folder: /data/apps/modulefiles/Core
+#

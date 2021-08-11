@@ -1,0 +1,27 @@
+---
+- name: Create download folder.
+  ansible.builtin.file:
+    path: "{{ download_folder }}"
+    state: directory
+    mode: 0600
+    
+
+- name: Download anaconda installer.
+  ansible.builtin.get_url:
+    url: "https://repo.anaconda.com/archive/Anaconda3-{{ version }}-Linux-x86_64.sh"
+    dest: "{{ download_folder }}/conda_installer.sh"
+    mode: a+x
+
+
+- name: Install anaconda.
+  ansible.builtin.shell:
+    cmd: "./conda_installer.sh -b -p {{ install_path }} -s"
+    chdir: "{{ download_folder }}"
+
+
+- name: Copy modulefile.
+  ansible.builtin.template:
+    src: anaconda3.lua.j2
+    dest: "{{ modulefile_folder }}/anaconda3-{{ version }}.lua"
+    mode: 0775
+  when: create_modulefile and modulefile_folder is defined

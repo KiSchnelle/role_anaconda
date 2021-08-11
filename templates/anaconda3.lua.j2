@@ -1,0 +1,42 @@
+help([[
+This module sets the PATH variable for anaconda3/{{ version }}
+]])
+
+local version = {{ version }}
+local base = {{ install_path }}
+
+setenv("ANACONDA_ROOT",base)
+prepend_path("PATH",pathJoin(base,"bin"))
+
+-- Load
+execute{cmd="source " .. base .. "/etc/profile.d/conda."..myShellType(),modeA={"load"}}
+execute{cmd="conda activate", modeA={"load"}}
+
+-- Unload
+execute{cmd="conda deactivate", modeA={"unload"}}
+if (myShellType() == "csh") then
+  cmd = "unsetenv CONDA_EXE; unsetenv _CONDA_ROOT; unsetenv _CONDA_EXE; " ..
+        "unsetenv CONDA_SHLVL; unalias conda"
+  execute{cmd=cmd, modeA={"unload"}}
+end
+if (myShellType() == "sh") then
+  if (mode() == "unload") then
+    remove_path("PATH", pathJoin(base,"condabin"))
+  end
+  cmd = "unset CONDA_EXE; unset _CE_CONDA; unset _CE_M; " ..
+        "unset -f __conda_activate; unset -f __conda_reactivate; " .. 
+        "unset -f __conda_hashr; unset CONDA_SHLVL; unset _CONDA_EXE; " .. 
+        "unset _CONDA_ROOT; unset -f conda"
+  execute{cmd=cmd, modeA={"unload"}}
+end
+
+whatis("Name         : Anaconda3 {{ version }}")
+whatis("Version      : Anaconda3 {{ version }}")
+whatis("Category     : Core")
+whatis("Description  : Anaconda base environment ")
+whatis("URL          : http://www.continuum.io/ ")
+whatis("Installed on : {{ ansible_date_time.date }} ")
+whatis("Modified on  : --- ")
+whatis("Installed by : {{ ansible_user }}")
+
+family("anaconda")
