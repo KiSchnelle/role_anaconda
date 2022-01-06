@@ -2,8 +2,8 @@ help([[
 This module sets the PATH variable for anaconda3/{{ version }}
 ]])
 
-local version = {{ version }}
-local base = {{ install_path }}
+local version = "{{ version }}"
+local base = "{{ install_path }}"
 
 setenv("ANACONDA_ROOT",base)
 prepend_path("PATH",pathJoin(base,"bin"))
